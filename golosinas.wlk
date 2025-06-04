@@ -25,7 +25,7 @@ class Bombon {
 class Alfajor {
 	var peso = 15
 	
-	method precio() { return 12 }
+	method precio() = 12
 	method peso() { return peso }
 	method mordisco() { peso = peso * 0.8 }
 	method sabor() { return chocolate }
@@ -63,14 +63,18 @@ class Oblea {
 	method precio() { return 5 }
 	method peso() { return peso }
 	method mordisco() {
+		peso= peso*(1- self.tamañoMordisco())
+		
+	}
+	method tamañoMordisco(){
 		if (peso >= 70) {
 			// el peso pasa a ser la mitad
-			peso = peso * 0.5
+			 return 0.5
 		} else { 
 			// pierde el 25% del peso
-			peso = peso - (peso * 0.25)
+			 return 0.25
 		}
-	}	
+	}
 	method sabor() { return vainilla }
 	method libreGluten() { return false }
 }

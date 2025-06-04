@@ -1,10 +1,14 @@
 import golosinas.*
 import mariano.*
 
-describe "group of tests" {
+describe "group of tests de personas" {
 
-  test "test 1" {
-    assert.equals(100, 50+50)
+  test "sabores faltantes" {
+    const mariano= new Persona()
+    const unBombon= new Bombon()
+    const unAlfa= new Alfajor()
+    mariano.comprar(unBombon)
+    mariano.comprar(unAlfa)
+    assert.equals([vainilla], mariano.saboresFaltantes([vainilla, chocolate, frutilla]))
   }
-
 }

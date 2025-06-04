@@ -1,13 +1,13 @@
 import golosinas.*
 
-object mariano {
+class Persona {
 	const golosinas = []
 	 
 	method comprar(_golosina) { golosinas.add(_golosina) }
 	
 	method desechar (_golosina) { golosinas.remove(_golosina) }
 	
-	method golosinas() { return golosinas }
+	//method golosinas() { return golosinas }
 	method primerGolosina() { return golosinas.first() }
 	method ultimaGolosina() { return golosinas.last() }
 	
@@ -62,5 +62,8 @@ object mariano {
 	
 	method tieneGolosinaDeSabor(_sabor) {
 		return golosinas.any({_golosina => _golosina.sabor() == _sabor})
+	}
+	method baniar(unaGolosina) {
+		aux = new unaGolosina
 	}
 }
