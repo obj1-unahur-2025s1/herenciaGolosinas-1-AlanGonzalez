@@ -1,30 +1,187 @@
 import golosinas.*
-import mariano.*
 
-describe "group of tests de personas" {
-    const mariano= new Persona()
-    const unBombon= new Bombon()
-    const tutiGluten= new Tuttifrutti(libreDeGluten= false)
-    const tuti= new Tuttifrutti(libreDeGluten= true)
-    const alfajor= new Alfajor()
-    const bombonDuro= new BombonDuro()
-    const choco= new Chocolatin(peso= 40)
-    const oblea= new Oblea()
-    
-  test "golosina mas cara" {
-    mariano.comprar(unBombon)
-    mariano.comprar(tutiGluten)
-    mariano.comprar(tuti)
-    assert.equals(tutiGluten, mariano.golosinaMasCara())
+
+describe "group of tests for pepita" {
+
+    const bombon = new Bombon()
+    const alfajor = new Alfajor()
+    const caramelo = new Caramelo(gusto = "frutilla")
+    const chupetin = new Chupetin()
+    const oblea = new Oblea()
+    const chocolatin = new Chocolatin(peso = 40)
+    const chocolatin2 = new Chocolatin(peso = 100)
+    const pastillatuti = new PastillaTutiFruti(libreDeGluten = true)
+    const pastillatuti2 = new PastillaTutiFruti(libreDeGluten = false)
+  
+
+  // se verifique que el peso inicial, el precio y el gusto sean los indicados en el enunciado; 
+  // y que es, o no, libre de gluten, de acuerdo también a lo que se indica en el enunciado
+
+  test "bombom tiene peso de 15, precio 5, gusto frutilla, y es libre de gluten" {
+    assert.equals(15, bombon.peso())
+    assert.equals(5, bombon.pesos())
+    assert.that(bombon.gusto() == "frutilla")
+    assert.that(bombon.libreDeGluten())
   }
 
-  test "sabores faltantes" {
-    mariano.comprar(unBombon)
-    mariano.comprar(tutiGluten)
-    mariano.comprar(tuti)
-    mariano.comprar( alfajor)
-    assert.equals([vainilla], mariano.saboresFaltantes([vainilla, chocolate, frutilla]))
+  test "alfajor tiene peso de 300, precio 12, gusto chocolate, y no es libre de gluten" {
+    assert.equals(300, alfajor.peso())
+    assert.equals(12, alfajor.pesos())
+    assert.that(alfajor.gusto() == "chocolate")
+    assert.notThat(alfajor.libreDeGluten())
+  }
+
+  test "caramelo tiene peso de 1, precio 1, gusto frutilla, y es libre de gluten" {
+    assert.equals(1, caramelo.peso())
+    assert.equals(1, caramelo.pesos())
+    assert.that(caramelo.gusto() == "frutilla")
+    assert.that(caramelo.libreDeGluten())
   }
   
+  test "chupetin tiene peso de 7, precio 2, gusto naranja, y es libre de gluten" {
+    assert.equals(7, chupetin.peso())
+    assert.equals(2, chupetin.pesos())
+    assert.that(chupetin.gusto() == "naranja")
+    assert.that(chupetin.libreDeGluten())
+  }
+
+  test "Oblea tiene peso de 250, precio 5, gusto vainilla, y no es libre de gluten" {
+    assert.equals(250, oblea.peso())
+    assert.equals(5, oblea.pesos())
+    assert.that(oblea.gusto() == "vainilla")
+    assert.notThat(oblea.libreDeGluten())
+  }
+
+  test "chocolatin tiene peso de 40, precio 20, gusto chocolate, y no es libre de gluten" {
+    assert.equals(40, chocolatin.peso())
+    assert.equals(20, chocolatin.pesos())
+    assert.that(chocolatin.gusto() == "chocolate")
+    assert.notThat(chocolatin.libreDeGluten())
+  }
+
+  test "chocolatin2 tiene peso de 100, precio 50, gusto chocolate, y no es libre de gluten" {
+    assert.equals(100, chocolatin2.peso())
+    assert.equals(50, chocolatin2.pesos())
+    assert.that(chocolatin2.gusto() == "chocolate")
+    assert.notThat(chocolatin2.libreDeGluten())
+  }
+
+  test "pastillatuti tiene peso de 5, precio 7, gusto frutilla, y es libre de gluten" {
+    assert.equals(5, pastillatuti.peso())
+    assert.equals(7, pastillatuti.pesos())
+    assert.that(pastillatuti.gusto() == "frutilla")
+    assert.that(pastillatuti.libreDeGluten())
+  }
+
+  test "pastillatuti 2 tiene peso de 5, precio 10, gusto frutilla, y no es libre de gluten" {
+    assert.equals(5, pastillatuti2.peso())
+    assert.equals(10, pastillatuti2.pesos())
+    assert.that(pastillatuti2.gusto() == "frutilla")
+    assert.notThat(pastillatuti2.libreDeGluten())
+  }
+
+  // TEST DE MORDISCO
+
+  test "bombom mordisco tiene peso de 15, precio 5, gusto frutilla, y es libre de gluten" {
+    bombon.mordisco()
+    bombon.mordisco()
+    assert.equals(7.8, bombon.peso())
+    assert.equals(5, bombon.pesos())
+    assert.that(bombon.gusto() == "frutilla")
+    assert.that(bombon.libreDeGluten())
+  }
+
+  test "alfajor mordisco tiene peso de 300, precio 12, gusto chocolate, y no es libre de gluten" {
+    alfajor.mordisco()
+    alfajor.mordisco()
+    assert.equals(192, alfajor.peso())
+    assert.equals(12, alfajor.pesos())
+    assert.that(alfajor.gusto() == "chocolate")
+    assert.notThat(alfajor.libreDeGluten())
+  }
+
+  test "caramelo mordisco tiene peso de 1, precio 1, gusto frutilla, y es libre de gluten" {
+    caramelo.mordisco()
+    caramelo.mordisco()
+    assert.equals(0, caramelo.peso())
+    assert.equals(1, caramelo.pesos())
+    assert.that(caramelo.gusto() == "frutilla")
+    assert.that(caramelo.libreDeGluten())
+  }
   
+  test "chupetin mordisco tiene peso de 7, precio 2, gusto naranja, y es libre de gluten" {
+    chupetin.mordisco()
+    chupetin.mordisco()
+    assert.equals(5.67, chupetin.peso())
+    assert.equals(2, chupetin.pesos())
+    assert.that(chupetin.gusto() == "naranja")
+    assert.that(chupetin.libreDeGluten())
+  }
+
+  test "Oblea mordisco tiene peso de 250, precio 5, gusto vainilla, y no es libre de gluten" {
+    oblea.mordisco()
+    oblea.mordisco()
+    oblea.mordisco()
+    assert.equals(46.875, oblea.peso())
+    assert.equals(5, oblea.pesos())
+    assert.that(oblea.gusto() == "vainilla")
+    assert.notThat(oblea.libreDeGluten())
+  }
+
+  test "chocolatin mordisco tiene peso de 40, precio 20, gusto chocolate, y no es libre de gluten" {
+    chocolatin.mordisco()
+    chocolatin.mordisco()
+    assert.equals(36, chocolatin.peso())
+    assert.equals(18, chocolatin.pesos())
+    assert.that(chocolatin.gusto() == "chocolate")
+    assert.notThat(chocolatin.libreDeGluten())
+  }
+
+  test "chocolatin2 mordisco tiene peso de 100, precio 50, gusto chocolate, y no es libre de gluten" {
+    chocolatin2.mordisco()
+    chocolatin2.mordisco()
+    assert.equals(96, chocolatin2.peso())
+    assert.equals(48, chocolatin2.pesos())
+    assert.that(chocolatin2.gusto() == "chocolate")
+    assert.notThat(chocolatin2.libreDeGluten())
+  }
+
+  test "pastillatuti mordisco tiene peso de 5, precio 7, gusto frutilla, y es libre de gluten" {
+    pastillatuti.mordisco()
+    pastillatuti.mordisco()
+    assert.equals(5, pastillatuti.peso())
+    assert.equals(7, pastillatuti.pesos())
+    assert.that(pastillatuti.gusto() == "naranja")
+    assert.that(pastillatuti.libreDeGluten())
+  }
+
+  test "pastillatuti 2 mordisco tiene peso de 5, precio 10, gusto frutilla, y no es libre de gluten" {
+    pastillatuti2.mordisco()
+    pastillatuti2.mordisco()
+    assert.equals(5, pastillatuti2.peso())
+    assert.equals(10, pastillatuti2.pesos())
+    assert.that(pastillatuti2.gusto() == "naranja")
+    assert.notThat(pastillatuti2.libreDeGluten())
+  }
+
+  test "mariano compra chocolatin, caramelo y bonbon" {
+    mariano.comprar(chocolatin)
+    mariano.comprar(caramelo)
+    mariano.comprar(bombon)
+    assert.equals([chocolatin, caramelo, bombon], mariano.bolsaGolosinas())
+  }
+
+  test "items faltantes alfajor, chupetin" {
+    mariano.comprar(chocolatin)
+    mariano.comprar(caramelo)
+    mariano.comprar(bombon)
+    assert.equals(#{alfajor, chupetin}, mariano.golosinasFaltantes(#{alfajor,bombon,chocolatin,chupetin}))
+  }
+
+  test "sabores faltantes melon" {
+    mariano.comprar(chocolatin)
+    mariano.comprar(caramelo)
+    mariano.comprar(bombon)
+    assert.equals(#{"melón", "vainilla"}, mariano.gustosFaltantes(#{"melón", "chocolate", "frutilla" , "vainilla"}))
+  }
 }
