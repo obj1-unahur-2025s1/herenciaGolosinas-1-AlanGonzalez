@@ -1,138 +1,181 @@
-/*
- * Los sabores
- */
-object frutilla { }
-object chocolate { }
-object vainilla { }
-object naranja { }
-object limon { }
+// De cada golosina interesan: el precio, el sabor, su peso en gramos y si contiene gluten.
+// Además, cada vez que una golosina recibe un mordisco se reduce la cantidad de gramos que posee.
 
-
-/*
- * Golosinas
- */
-class Golosinas{
-	var peso= 15
-	var property libreGluten= false
-	method peso() = peso
-	method calcularEspacio(estanteria) = peso + 25 < estanteria.lugarDisponible() 
-	method enOferta() = self.precio() < 10
-	method precio() 
-}
-class Bombon inherits Golosinas(libreGluten= true){
-	override method precio() { return 6 }
-	method mordisco() { peso = peso * 0.8 - 1 }
-	method sabor() { return frutilla }
+class Golosina {
+	var property peso
+	var property esBaniada = false
+	method libreDeGluten()
+	method pesos()
+	method mordisco()
 	
 }
 
-class BombonDuro inherits Bombon{
+class Bombon inherits Golosina (peso = 15){
+	override method peso() = 15
+	override method pesos() = 5
+	method gusto() = "frutilla"
+	override method libreDeGluten() = true
+	override method mordisco() { peso = (peso * 0.8) - 1}
+
+}
+
+class BombonDuro inherits Bombon {
+	override method mordisco() {peso = (peso - 1).max(0)}
+	method gradoDureza() = if(peso > 12) 3 else if(peso.between(8, 12)) 2 else 1
+}
+
+class Alfajor inherits Golosina (peso = 300){
+	override method pesos() = 12
+	method gusto() = "chocolate"
+	override method libreDeGluten() = false
+	override method mordisco() { peso = peso * 0.8}
+
+}
+
+class Caramelo inherits Golosina( peso = 1) {
+	var property gusto
+	override method pesos() = 1
+	override method libreDeGluten() = true
+	override method mordisco() { peso = (peso - 1).max(0)}
+}
+
+class CarameloCorazonChocolate inherits Caramelo {
 	override method mordisco() {
-		peso= peso - 1
+		super()
+		gusto = "chocolate"
 	}
-	method gradoDureza(){
-	 if(peso > 12) 
-	 	3 
-	 else 
-	 	if (peso.between(8,12)) 
-			2 
-	 else 
-		1
+	override method pesos() = super() + 1
+}
+
+class Chupetin inherits Golosina (peso = 7) {
+	override method pesos() = 2
+	method gusto() = "naranja"
+	override method libreDeGluten() = true
+	override method mordisco() {
+    	if(peso > 2){
+      		peso = peso * 0.9
+    	}
 	}
 }
 
-
-
-class Alfajor inherits Golosinas{
-	override method precio() = 12
-	method mordisco() { peso = peso * 0.8 }
-	method sabor() { return chocolate }
-}
-
-class Caramelo inherits Golosinas(peso= 5, libreGluten= true) {
-	var property sabor= frutilla
-	override method precio() { return peso * 17 }
-	method mordisco() { peso = peso - 1.2 }
-	
-	
-}
-
-class CarameloCorazon inherits Caramelo {
-	override method mordisco() { //si el metodo lleva param
-		super() // aca tambien
-		sabor= chocolate
+class Oblea inherits Golosina (peso = 250){
+	override method pesos() = 5
+	method gusto() = "vainilla"
+	override method libreDeGluten() = false
+	override method mordisco() {
+		if(peso > 70){
+			peso = peso / 2
+    	}
+    	else{
+      		peso = peso * 0.75
+    	}
 	}
-	override method precio() = super() + 1 
 }
 
-
-class Chupetin inherits Golosinas(peso= 7, libreGluten= true) {
-	override method precio() { return 2 }
-	method mordisco() { 
-		if (peso >= 2) {
-			peso = peso * 0.9
+class ObleasCrujientes inherits Oblea {
+	var property cantidadMordiscos = 0
+	override method mordisco(){
+		cantidadMordiscos = cantidadMordiscos + 1
+		super()
+		if(cantidadMordiscos >= 3){
+			peso = (peso - 3).max(0)
 		}
 	}
-	method sabor() { return naranja }
-
+	method estaDebil() = cantidadMordiscos >= 3
 }
 
-class Oblea inherits Golosinas(peso= 250) {
-	override method precio() { return 5 }
-	method mordisco() {
-		peso= peso*(1- self.tamañoMordisco())
-		
-	}
-	method tamañoMordisco(){
-		if (peso >= 70) {
-			// el peso pasa a ser la mitad
-			 return 0.5
-		} else { 
-			// pierde el 25% del peso
-			 return 0.25
-		}
-	}
-	method sabor() { return vainilla }
-}
-
-class Chocolatin inherits Golosinas{
-	// hay que acordarse de *dos* cosas, el peso inicial y el peso actual
-	// el precio se calcula a partir del precio inicial
-	// el mordisco afecta al peso actual
+class Chocolatin inherits Golosina{
 	var comido = 0
-	override method precio() { return peso * 0.50 }
-	override method peso() { return (peso - comido).max(0) }
-	method mordisco() { comido = comido + 2 }
-	method sabor() { return chocolate }
-
+	override method pesos() = peso * 0.50
+	override method peso() = (peso - comido).max(0)
+	override method mordisco(){comido = comido + 2}
+	method gusto() = "chocolate"
+	override method libreDeGluten() = false
 }
 
-class GolosinaBaniada {
-	var golosinaInterior
+class ChocolatinVip inherits Chocolatin {
+	override method peso()=((peso-comido)*(1+heladera.humedad())).max(0)
+	method humedad() = heladera.humedad()
+}
+
+class ChocolatinPremium inherits ChocolatinVip {
+	override method humedad() = super() / 2
+}
+
+object heladera {
+	var property humedad = 0
+	method humedad(nuevo){
+		if(!nuevo.between(0,1)){
+			throw new Exception(message = "debe estar entre 0 y 1")
+		}
+		humedad = nuevo
+	}
+}
+
+class GolosinaBaniada inherits Golosina{
+	var golosinaInicial
 	var pesoBanio = 4
-	
-	method golosinaInterior(unaGolosina) { golosinaInterior = unaGolosina }
-	method precio() { return golosinaInterior.precio() + 2 }
-	method peso() { return golosinaInterior.peso() + pesoBanio }
-	method mordisco() {
-		golosinaInterior.mordisco()
-		pesoBanio = (pesoBanio - 2).max(0) 
-	}	
-	method sabor() { return golosinaInterior.sabor() }
-	method libreGluten() { return golosinaInterior.libreGluten() }	
+	method golosinaInicial(unaGolosina) { golosinaInicial = unaGolosina}
+	override method pesos() = golosinaInicial.pesos() + 2
+	override method peso() = golosinaInicial.peso() + pesoBanio
+	method pesoBanio() = pesoBanio 
+	method gusto() = golosinaInicial.gusto()
+	override method libreDeGluten() = golosinaInicial.libreDeGluten()
+	override method mordisco() {
+    golosinaInicial.mordisco()
+    pesoBanio = (pesoBanio - 2).max(0)
+	}
+	override method esBaniada() = true
 }
 
-
-class Tuttifrutti {
-	var libreDeGluten
-	const sabores = [frutilla, chocolate, naranja]
+class PastillaTutiFruti inherits Golosina(peso = 5){
 	var saborActual = 0
-	
-	method mordisco() { saborActual += 1 }	
-	method sabor() { return sabores.get(saborActual % 3) }	
+	var property libreDeGluten
+	override method libreDeGluten() = libreDeGluten
+	const gusto = ["frutilla", "chocolate", "naranja"]
+	override method pesos() = if(libreDeGluten) 7 else 10
+	override method mordisco() { saborActual = saborActual + 1}
+	method gusto() { return gusto.get(saborActual % 3) }
+}
 
-	method precio() { return (if(self.libreGluten()) 7 else 10) }
-	method peso() { return 5 }
-	method libreGluten() { return libreDeGluten }	
-	method libreGluten(valor) { libreDeGluten = valor }
+object mariano {
+	const compradas = []
+	const desechadas = []
+	const property bolsaGolosinas = []
+	method comprar(unaGolosina) { 
+    bolsaGolosinas.add(unaGolosina)
+    compradas.add(unaGolosina)
+    }
+	method desechar(unaGolosina) { 
+    bolsaGolosinas.remove(unaGolosina)
+    desechadas.add(unaGolosina)
+    }
+	method cantidadGolosinas() = bolsaGolosinas.size()
+	method tieneGolosina(unaGolosina) = bolsaGolosinas.contains(unaGolosina)
+	method probarGolosina() = bolsaGolosinas.forEach({g=>g.mordisco()})
+	method hayGolosinasSinTACC() = bolsaGolosinas.any({g=>g.libreDeGluten()})
+	method preciosCuidados() = bolsaGolosinas.any({g=>g.pesos() <= 10})
+	method golosinaDeSabor(unSabor) = bolsaGolosinas.find({g=>g.gusto() == unSabor})
+	method golosinasDeabor(unSabor) = bolsaGolosinas.filter({g=>g.gusto() == unSabor})
+	method sabores() = bolsaGolosinas.map({g=>g.gusto()}).asSet()
+	method golosinaMasCara() = bolsaGolosinas.max({g=>g.pesos()})
+	method pesoGolosinas() = bolsaGolosinas.sum({g=>g.peso()})
+
+	method golosinasFaltantes(golosinaDeseada) = golosinaDeseada.difference(bolsaGolosinas.asSet())
+	method gustosFaltantes(gustosDeseados) = gustosDeseados.difference(self.sabores())
+
+	method gastoEn(sabor) = bolsaGolosinas.filter({g=>g.gusto() == sabor}).sum({g=>g.pesos()})
+	method saborPopular() = bolsaGolosinas.map({g=>g.gusto()}).max({g=>self.cantidadGolosinasDeUnSabor(g)})
+	method cantidadGolosinasDeUnSabor(sabor) = bolsaGolosinas.filter({g=>g.gusto() == sabor}).size()
+	method saborMasPesado() = bolsaGolosinas.map({g=> g.gusto()}).asSet().max({g=>self.pesoDeCadaSabor(g)})
+	method pesoDeCadaSabor(sabor) = bolsaGolosinas.filter({g=>g.gusto() == sabor}).map({g=>g.peso()}).sum() 
+	method comproYDesecho(golosina) = compradas.contains(golosina) && desechadas.contains(golosina)
+
+	method baniar(unaGolosina) {
+		if (unaGolosina.esBaniada()) {
+			throw new Exception(message = "esta golosina ya esta baniada")
+	}	else {
+    		bolsaGolosinas.add(new GolosinaBaniada(golosinaInicial = unaGolosina))
+		}
+	}
 }
